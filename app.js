@@ -7,7 +7,7 @@
 // GLOBAL VARIABLES
 
 // STATIC
-// Never ever reassign these!  Otherwise who knows what will happen!
+// Never ever reassign these in the code!  Otherwise who knows what will happen!
 
 var debug = false; // flag for debugging.
 
@@ -28,9 +28,9 @@ var niceThings = ["wow!", "nice!", "good job!", "좋아!", "대박!", "와아!",
 // DYNAMIC
 // Update based on the state of the program.
 
-var sol = 0; // numeric variable containing the correct solution to the problem.
-var diff = 0; // numeric variable containing the current difficulty.
-var lang = 0;  // numeric variable containing the language in use (0 = Sino-Korean, 1 = Native Korean).
+var sol; // numeric variable containing the correct solution to the problem.
+var diff; // numeric variable containing the current difficulty.
+var lang;  // numeric variable containing the language in use (0 = Sino-Korean, 1 = Native Korean).
 
 // HELPER FUNCTIONS
 
@@ -109,13 +109,13 @@ var newQuestion = function () { // This is the function that will generate a new
     var num1 = getRandom(0, max);
     var num2 = getRandom(0, max);
 
-    var word1 = getNumWord(num1, lang);
+    var word1 = getNumWord(num1, lang); // recall that lang is a global variable.
     var word2 = getNumWord(num2, lang);
 
     var ans = num1 + num2;
 
     // State changes happen here!
-    sol = ans;
+    sol = ans; // sol is a global variable.
     a.value = "";
     q.innerHTML = word1+" + "+word2;
 
@@ -123,30 +123,40 @@ var newQuestion = function () { // This is the function that will generate a new
 
 }
 
-document.addEventListener("keyup", function(e) {
+// DOM MODIFICATIONS
+
+document.addEventListener("keyup", function(e) { // any time the user enters a keystroke, we'll run this to see if they have the right answer.
+    // would it involve fewer updates if we updated only on a button press or enter keystroke instead?  yes, of course.
+    // But the app feels much, much snappier this way.
+    // Technically, the user could guess correctly more easily with this setup, but honestly, I don't care that much.
 
     // Read input from a.
     var ans = parseInt(a.value);
 
-    if (ans === sol || (debug = true && ans === 0)) {
-	sendMessage(getRandomElement(niceThings));
+    // If the answer is correct, OR if we're debugging, we can just enter 0 over and over again.  Very useful.
+    if (ans === sol ||
+	(debug = true && ans === 0)) {
+	sendMessage(getRandomElement(niceThings)); // Send a nice thing because the user was right!
 	newQuestion();
     }
     
 });
 
-l.addEventListener("change", function(e) {
-    lang = parseInt(l.value);
+l.addEventListener("change", function(e) { // any time the value here is changed, update "lang" and get a new question.
+    lang = parseInt(l.value); // Thanks HTML for sending all my values as strings.
     sendMessage("시, 작!");
     newQuestion();
 });
-d.addEventListener("change", function(e) {
+d.addEventListener("change", function(e) { // same as above but for "diff".
     diff = parseInt(d.value);
     sendMessage("시, 작!");
     newQuestion();
 });
 
-var init = function init() {
+var init = function init() { // On first run, we want the solution to be 0, the language to be Sino-Korean, and the difficulty to be easy.
+    sol = 0;
+    lang = 0;
+    diff = 0;
     q.innerHTML = "When you're ready, enter \"0\" into the box below.";
     a.value = "";
     sendMessage("시, 작!");
