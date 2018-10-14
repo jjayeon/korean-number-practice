@@ -65,7 +65,6 @@ var getNumWord = function getNumWord(i, l) { // function that converts an intege
 	    var onesStr; // Let tensStr and onesStr be the string values of the tens and ones place.
 	    
 	    if (tens === 1) { tensStr = "십"; } // In the case of 1, no preface is necessary.
-	    else if (tens === 6) { tensStr = "유십"; } // In the case of 6, 육 becomes 유.
 	    else { tensStr = numWords_sino[tens] + "십"; } // Otherwise, the method is pretty easy.
 	    
 	    onesStr = numWords_sino[ones];
